@@ -5657,7 +5657,7 @@ TEST_F(AtenXlaTensorTest, TestIndexCopy) {
     }
   }
   ExpectCounterNotChanged("aten::.*", cpp_test::GetIgnoredCounters());
-  ExpectCounterChanged("xla::index_copy_", cpp_test::GetIgnoredCounters());
+  ExpectCounterChanged("xla::index_copy", cpp_test::GetIgnoredCounters());
 }
 
 TEST_F(AtenXlaTensorTest, TestIndexCopyInPlace) {
@@ -5688,16 +5688,16 @@ TEST_F(AtenXlaTensorTest, TestIndexCopyInPlace) {
                     : torch::randint(100, value_sizes,
                                      torch::TensorOptions(scalar_type));
             torch::Tensor xla_base = CopyToDevice(base.clone(), device);
-            torch::Tensor result = base.index_copy_(dim, index, value);
+            torch::Tensor result = base.index_copy(dim, index, value);
             torch::Tensor xla_index = CopyToDevice(index, device);
             torch::Tensor xla_value = CopyToDevice(value, device);
             torch::Tensor xla_result =
-                xla_base.index_copy_(dim, xla_index, xla_value);
+                xla_base.index_copy(dim, xla_index, xla_value);
             AllEqual(result, xla_result);
             AllEqual(base, xla_base);
 
             ExpectCounterNotChanged("aten::.*", cpp_test::GetIgnoredCounters());
-            ExpectCounterChanged("xla::index_copy_",
+            ExpectCounterChanged("xla::index_copy",
                                  cpp_test::GetIgnoredCounters());
           });
     }
@@ -5736,7 +5736,7 @@ TEST_F(AtenXlaTensorTest, TestIndexCopyRank0) {
       });
 
       ExpectCounterNotChanged("aten::.*", cpp_test::GetIgnoredCounters());
-      ExpectCounterChanged("xla::index_copy_", cpp_test::GetIgnoredCounters());
+      ExpectCounterChanged("xla::index_copy", cpp_test::GetIgnoredCounters());
     }
   }
 }
